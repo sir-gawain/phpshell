@@ -36,7 +36,7 @@ define('PHPSHELL_VERSION', '2.6');
 
 /* This error handler will turn all notices, warnings, and errors into fatal
  * errors, unless they have been suppressed with the @-operator. */
-function error_handler($errno, $errstr, $errfile, $errline, $errcontext)
+function error_handler($errno, $errstr, $errfile, $errline)
 {
     /* The @-operator (used with chdir() below) temporarily makes
      * error_reporting() return zero, and we don't want to die in that case.
@@ -233,7 +233,7 @@ function runcommand($cmd) {
     list($status, $out, $newcwd) = exec_command($command, $_SESSION['cwd'], true, true);
 
     // trim because 'pwd' adds a newline
-    if (strlen($newcwd) > 0 && $newcwd{0} == '/') {
+    if (strlen($newcwd) > 0 && $newcwd[0] == '/') {
         $_SESSION['cwd'] = trim($newcwd);
     }
 
@@ -579,7 +579,7 @@ class RateLimit {
     var $filename;
     var $intemp;
 
-    function RateLimit() {
+    function __construct() {
         global $ini;
         if (strlen(trim($ini['settings']['rate-limit-file']))) {
             $this->filename = $ini['settings']['rate-limit-file'];
@@ -878,8 +878,8 @@ if (!isset($_SESSION['csrf_token'])) {
 
 
 /* Initialize some variables we need */
-setdefault($_SESSION['env']['rows'], array(@$_POST['rows'], @$_SESSION['env']['rows'], 24));
-setdefault($_SESSION['env']['columns'], array(@$_POST['columns'], @$_SESSION['env']['columns'], 80));
+setdefault($_SESSION['env']['rows'], array($_POST['rows']??'', $_SESSION['env']['rows']??'', 24));
+setdefault($_SESSION['env']['columns'], array($_POST['columns']??'', $_SESSION['env']['columns']??'', 80));
 
 if (!preg_match('/^[[:digit:]]+$/', $_SESSION['env']['rows'])) { 
     $_SESSION['env']['rows']=24 ; 
@@ -1068,7 +1068,7 @@ if ($_SESSION['authenticated']) {
         preg_match('/^[[:blank:]]*([^[:blank:]]+)([[:blank:]].*)$/', $command.' ', $regs);
         $cmd_name = $regs[1];
         $arg = trim($regs[2]);
-        if (strlen($arg) > 1 && $arg{0} === substr($arg, -1) && ($arg{0} == '"' || $arg{0} == "'")) {
+        if (strlen($arg) > 1 && $arg[0] === substr($arg, -1) && ($arg[0] == '"' || $arg[0] == "'")) {
             $arg = substr($arg, 1, -1);
         }
 
